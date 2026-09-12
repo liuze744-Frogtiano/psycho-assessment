@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理员后台 · 人格与AI态度测评</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'Noto Sans SC', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-white text-gray-700 antialiased">
+
+  <header class="border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="/" class="text-sm font-medium text-gray-900 tracking-wide">人格与AI态度测评</a>
+      <span class="text-xs text-gray-400">管理员统计后台</span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-12">
+
+    <!-- 登录门槛 -->
+    <div id="gate" class="max-w-sm mx-auto border border-gray-200 rounded-2xl p-8">
+      <h1 class="text-xl font-light text-gray-900 mb-2">管理员验证</h1>
+      <p class="text-sm text-gray-400 mb-6">请输入访问口令以查看统计数据。</p>
+      <input type="password" id="gate-input" placeholder="访问口令"
+             class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm mb-3
+                    focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900">
+      <p id="gate-error" class="hidden text-sm text-red-600 mb-3"></p>
+      <button id="gate-btn" class="w-full py-2.5 rounded-full bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition-colors">
+        查看统计
+      </button>
+    </div>
+
+    <!-- 统计面板 -->
+    <div id="panel" class="hidden space-y-10">
+
+      <section class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-xs tracking-widest text-gray-400 uppercase mb-2">Admin Dashboard</p>
+          <h1 class="text-3xl font-light text-gray-900">统计概览</h1>
+          <p id="meta" class="mt-1 text-xs text-gray-400"></p>
+        </div>
+        <button id="refresh-btn" class="px-5 py-2 rounded-full border border-gray-300 text-sm text-gray-700 hover:border-gray-900 transition-colors">
+          刷新数据
+        </button>
+      </section>
+
+      <!-- 总参与人数 -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="border border-gray-200 rounded-2xl p-6">
+          <p class="text-xs text-gray-400 mb-2">总参与人数</p>
+          <p id="total-n" class="text-4xl font-light text-gray-900">—</p>
+        </div>
+        <div class="border border-gray-200 rounded-2xl p-6 sm:col-span-2">
+          <p class="text-xs text-gray-400 mb-2">Cronbach's α 信度系数</p>
+          <div id="alpha-list" class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-sm"></div>
+        </div>
+      </section>
+
+      <!-- 各维度平均分 -->
+      <section class="border border-gray-200 rounded-2xl p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-1">各维度平均分</h2>
+        <p class="text-xs text-gray-400 mb-4">得分范围 1–5；SD 为标准差</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div class="relative h-72"><canvas id="dim-mean-chart"></canvas></div>
+          <div id="dim-table"></div>
+        </div>
+      </section>
+
+      <!-- 分数分布 -->
+      <section class="border border-gray-200 rounded-2xl p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg font-medium text-gray-900">维度分数分布</h2>
+            <p class="text-xs text-gray-400">横轴为 0.5 分一档的得分区间，纵轴为人数</p>
+          </div>
+          <select id="dist-select" class="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-gray-900"></select>
+        </div>
+        <div class="relative h-72"><canvas id="dist-chart"></canvas></div>
+      </section>
+
+      <!-- 单题作答分布 -->
+      <section class="border border-gray-200 rounded-2xl p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-1">单题作答分布</h2>
+        <p class="text-xs text-gray-400 mb-4">「反向」标记的题目按 6 − 原始分 计入维度分</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs text-gray-400 border-b border-gray-100">
+                <th class="py-2 pr-3 font-normal">题目</th>
+                <th class="py-2 px-3 font-normal">1</th>
+                <th class="py-2 px-3 font-normal">2</th>
+                <th class="py-2 px-3 font-normal">3</th>
+                <th class="py-2 px-3 font-normal">4</th>
+                <th class="py-2 px-3 font-normal">5</th>
+                <th class="py-2 px-3 font-normal w-48">作答分布</th>
+                <th class="py-2 px-3 font-normal text-right">均值</th>
+              </tr>
+            </thead>
+            <tbody id="item-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 相关性 -->
+      <section class="border border-gray-200 rounded-2xl p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-1">大五人格与 AI 态度的相关性</h2>
+        <p class="text-xs text-gray-400 mb-4">
+          Pearson 相关矩阵：行为大五人格 5 个维度，列为 AI 态度 3 个子维度及 AI 总态度；
+          每格上行 r、下行 p（双尾），* p &lt; .05，** p &lt; .01。相关性不代表因果关系。
+        </p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs text-gray-400 border-b border-gray-100">
+                <th class="py-2 pr-3 font-normal">人格维度</th>
+                <th class="py-2 px-3 font-normal text-right">AI收益感知</th>
+                <th class="py-2 px-3 font-normal text-right">AI风险感知</th>
+                <th class="py-2 px-3 font-normal text-right">AI使用意愿</th>
+                <th class="py-2 px-3 font-normal text-right">AI总态度</th>
+              </tr>
+            </thead>
+            <tbody id="corr-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 用户原始记录列表 -->
+      <section class="border border-gray-200 rounded-2xl p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-1">用户原始记录列表</h2>
+        <p class="text-xs text-gray-400 mb-4">
+          每行对应一名受试者；点击「查看详情」可展开该用户 40 道题的原始作答分值（按提交时间倒序）
+        </p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs text-gray-400 border-b border-gray-100 whitespace-nowrap">
+                <th class="py-2 pr-3 font-normal">记录ID</th>
+                <th class="py-2 px-3 font-normal">提交时间</th>
+                <th class="py-2 px-3 font-normal text-right">外倾性</th>
+                <th class="py-2 px-3 font-normal text-right">宜人性</th>
+                <th class="py-2 px-3 font-normal text-right">尽责性</th>
+                <th class="py-2 px-3 font-normal text-right">神经质</th>
+                <th class="py-2 px-3 font-normal text-right">开放性</th>
+                <th class="py-2 px-3 font-normal text-right">AI收益</th>
+                <th class="py-2 px-3 font-normal text-right">AI风险</th>
+                <th class="py-2 px-3 font-normal text-right">AI意愿</th>
+                <th class="py-2 px-3 font-normal text-right">AI总态度</th>
+                <th class="py-2 pl-3 font-normal text-right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="records-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="text-xs text-gray-400 leading-relaxed">
+        数据说明：所有作答以匿名形式保存在服务器 JSON 数据文件（data/responses.json）中。
+        本后台数据仅用于课程科研的整体统计分析。
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-100 mt-8">
+    <div class="max-w-5xl mx-auto px-6 py-6 text-xs text-gray-400 leading-relaxed">
+      本测评仅用于课程科研探索，不构成任何临床或心理诊断。结果仅供个人参考。
+    </div>
+  </footer>
+
+  <script src="/js/admin.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>问卷 · 人格与AI态度测评</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'Noto Sans SC', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-white text-gray-700 antialiased">
+
+  <!-- 顶部：标题 + 进度条 -->
+  <div class="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-gray-100">
+    <div class="max-w-3xl mx-auto px-6 pt-4 pb-3">
+      <div class="flex items-center justify-between mb-3">
+        <a href="/" class="text-sm font-medium text-gray-900 tracking-wide">人格与AI态度测评</a>
+        <span id="progress-text" class="text-xs text-gray-400">已作答 0 / 40</span>
+      </div>
+      <div class="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+        <div id="progress-bar" class="h-full bg-gray-900 rounded-full transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-3xl mx-auto px-6 py-10">
+
+    <section class="mb-10">
+      <p class="text-xs tracking-widest text-gray-400 uppercase mb-3">Questionnaire</p>
+      <h1 class="text-3xl font-light text-gray-900 mb-3">测评问卷</h1>
+      <p class="text-gray-500 text-[15px] leading-relaxed">
+        请根据您近期的真实想法与感受作答，答案没有对错之分。全部题目为单选必答项，
+        1 = 非常不同意，2 = 不同意，3 = 中立，4 = 同意，5 = 非常同意。
+      </p>
+    </section>
+
+    <form id="survey-form" novalidate>
+      <!-- 两个部分由 survey.js 根据题库渲染 -->
+      <div id="part-b5"></div>
+      <div id="part-ai" class="mt-12"></div>
+
+      <!-- 提交区 -->
+      <div class="mt-12 border-t border-gray-100 pt-8">
+        <p id="form-error" class="hidden mb-4 text-sm text-red-600"></p>
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-gray-400">提交后立即生成个人结果页</p>
+          <button type="submit" id="submit-btn"
+                  class="px-8 py-3 rounded-full bg-gray-900 text-white text-sm font-medium tracking-wide
+                         hover:bg-gray-700 transition-colors disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+            提交问卷
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </main>
+
+  <footer class="border-t border-gray-100 mt-12">
+    <div class="max-w-3xl mx-auto px-6 py-6 text-xs text-gray-400 leading-relaxed">
+      本测评仅用于课程科研探索，不构成任何临床或心理诊断。结果仅供个人参考。
+    </div>
+  </footer>
+
+  <script src="/js/survey.js"></script>
+</body>
+</html>

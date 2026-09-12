@@ -1,0 +1,18 @@
+{
+  "name": "psych-assessment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "网页心理测评系统：大五人格量表（25题）+ AI态度量表（15题，含3子维度），共40题（课程科研用途）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@volcengine/tos-sdk": "^2.9.1",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

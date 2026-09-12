@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测评结果 · 人格与AI态度测评</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'Noto Sans SC', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-white text-gray-700 antialiased">
+
+  <header class="border-b border-gray-100">
+    <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="/" class="text-sm font-medium text-gray-900 tracking-wide">人格与AI态度测评</a>
+      <span class="text-xs text-gray-400">受试者结果</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+
+    <!-- 标题 -->
+    <section class="mb-10">
+      <p class="text-xs tracking-widest text-gray-400 uppercase mb-3">Your Report</p>
+      <h1 class="text-3xl font-light text-gray-900 mb-2">您的测评结果</h1>
+      <p id="meta" class="text-xs text-gray-400"></p>
+    </section>
+
+    <!-- 免责声明横幅 -->
+    <div class="mb-10 border border-gray-200 rounded-2xl bg-gray-50 px-6 py-4 text-sm text-gray-600 leading-relaxed">
+      本结果基于 40 题自评量表生成，<strong class="text-gray-900">仅供个人参考，不构成任何临床或心理诊断</strong>。
+      如需专业评估，请咨询具备资质的心理健康专业人士。
+    </div>
+
+    <!-- 大五雷达图 -->
+    <section class="mb-10 border border-gray-200 rounded-2xl p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-1">大五人格雷达图</h2>
+      <p class="text-xs text-gray-400 mb-4">五个维度的得分范围为 1–5，分数仅代表自评倾向的相对高低</p>
+      <div class="relative h-80 w-full max-w-md mx-auto">
+        <canvas id="radar-chart"></canvas>
+      </div>
+
+      <!-- 维度得分表 -->
+      <div id="dim-list" class="mt-8 space-y-4"></div>
+    </section>
+
+    <!-- AI 态度得分 -->
+    <section class="mb-10 border border-gray-200 rounded-2xl p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-1">AI 态度得分</h2>
+      <p class="text-xs text-gray-400 mb-5">三个子维度各为 5 题平均分，AI 总态度为全部 15 题平均分，范围 1–5；反向题已按 6 − 原始分转换</p>
+
+      <!-- AI 总态度 -->
+      <div class="flex items-baseline gap-3 mb-3">
+        <span class="text-xs text-gray-500 w-20 shrink-0">AI总态度</span>
+        <span id="ai-score" class="text-4xl font-light text-gray-900"></span>
+        <span id="ai-level" class="px-3 py-1 rounded-full border border-gray-300 text-xs text-gray-600"></span>
+      </div>
+      <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-3">
+        <div id="ai-bar" class="h-full bg-gray-900 rounded-full" style="width:0%"></div>
+      </div>
+      <p id="ai-text" class="text-[15px] leading-relaxed text-gray-600 mb-6"></p>
+
+      <!-- 三个子维度 -->
+      <div id="ai-sub-list" class="space-y-4 pt-5 border-t border-gray-100"></div>
+      <p class="mt-4 text-xs text-gray-400 leading-relaxed">
+        说明：「AI风险感知」分数高代表对内容错误、隐私泄露、过度依赖等风险<strong class="text-gray-500">更为关注</strong>，
+        是风险意识的体现，并不等同于对 AI 持否定态度；建议将总态度分与三个子维度分结合理解。
+      </p>
+    </section>
+
+    <!-- 文字解读 -->
+    <section class="mb-10">
+      <h2 class="text-lg font-medium text-gray-900 mb-1">结果解读</h2>
+      <p class="text-xs text-gray-400 mb-5">以下描述为基于量表分数的一般性倾向描述，并非对个人的判定</p>
+      <div id="interpretations" class="space-y-4"></div>
+    </section>
+
+    <div class="flex items-center justify-between border-t border-gray-100 pt-8">
+      <p class="text-xs text-gray-400">本页面为一次性结果页，请自行保存重要信息</p>
+      <a href="/" class="px-6 py-2.5 rounded-full border border-gray-300 text-sm text-gray-700 hover:border-gray-900 transition-colors">
+        返回首页
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-100 mt-8">
+    <div class="max-w-3xl mx-auto px-6 py-6 text-xs text-gray-400 leading-relaxed">
+      本测评仅用于课程科研探索，不构成任何临床或心理诊断。结果仅供个人参考。
+    </div>
+  </footer>
+
+  <div id="loading" class="fixed inset-0 bg-white flex items-center justify-center text-sm text-gray-400">正在加载结果…</div>
+
+  <script src="/js/result.js"></script>
+</body>
+</html>
