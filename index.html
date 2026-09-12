@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>知情同意 · 人格与AI态度测评</title>
+  <link rel="icon" href="data:,">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'Noto Sans SC', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-white text-gray-700 antialiased">
+
+  <!-- 顶部导航 -->
+  <header class="border-b border-gray-100">
+    <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="/" class="text-sm font-medium text-gray-900 tracking-wide">人格与AI态度测评</a>
+      <span class="text-xs text-gray-400">课程科研项目</span>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-12">
+
+    <!-- 标题区 -->
+    <section class="mb-12">
+      <p class="text-xs tracking-widest text-gray-400 uppercase mb-3">Informed Consent</p>
+      <h1 class="text-4xl font-light text-gray-900 leading-snug mb-4">知情同意书</h1>
+      <p class="text-gray-500 leading-relaxed">
+        在开始测评之前，请您仔细阅读以下说明。这些内容描述了本次测评的目的、流程、数据收集与使用方式，以及您作为参与者的权利。
+      </p>
+    </section>
+
+    <!-- 测评介绍 -->
+    <section class="mb-8">
+      <h2 class="text-lg font-medium text-gray-900 mb-3">一、测评介绍</h2>
+      <p class="leading-relaxed text-[15px]">
+        本测评是一项用于课程科研探索的在线心理测评，包含两个部分：
+      </p>
+      <ul class="mt-3 space-y-2 text-[15px] leading-relaxed list-disc list-inside text-gray-600">
+        <li>第一部分：大五人格量表（25 题，涵盖外倾性、宜人性、尽责性、神经质、开放性五个维度，每维度 5 题）；</li>
+        <li>第二部分：人工智能（AI）态度量表（15 题，含 AI 收益感知、AI 风险感知、AI 使用意愿三个子维度，每个维度 5 题）。</li>
+      </ul>
+      <p class="mt-3 leading-relaxed text-[15px]">
+        全部题目均为单选题，采用 5 点李克特量表（1 = 非常不同意，5 = 非常同意）。完成全部题目约需 8–12 分钟。所有题目均为必答项，提交前请确认没有遗漏。
+      </p>
+    </section>
+
+    <!-- 数据收集说明 -->
+    <section class="mb-8">
+      <h2 class="text-lg font-medium text-gray-900 mb-3">二、数据收集与使用说明</h2>
+      <ul class="space-y-2 text-[15px] leading-relaxed list-disc list-inside text-gray-600">
+        <li>本测评<strong class="text-gray-800">不收集</strong>您的姓名、联系方式、IP 地址等任何个人身份信息，作答完全匿名；</li>
+        <li>您的作答数据将以匿名形式保存在本系统的数据文件中，仅用于课程科研中的整体统计分析；</li>
+        <li>研究结果仅以<strong class="text-gray-800">汇总统计</strong>形式呈现，不会展示任何个人的原始作答内容；</li>
+        <li>您的数据不会被出售、共享或用于本测评之外的任何商业用途。</li>
+      </ul>
+    </section>
+
+    <!-- 重要声明 -->
+    <section class="mb-10 border border-gray-200 rounded-2xl p-6 bg-gray-50">
+      <h2 class="text-lg font-medium text-gray-900 mb-3">三、重要声明</h2>
+      <p class="leading-relaxed text-[15px] text-gray-700">
+        本测评<strong class="text-gray-900">仅用于课程科研探索，不构成任何临床诊断或心理健康评估</strong>。
+        测评结果反映的是您在作答当时基于自评量表的倾向性描述，<strong class="text-gray-900">仅供个人参考</strong>，
+        不能作为诊断、治疗或任何医疗决策的依据。
+      </p>
+      <p class="mt-3 leading-relaxed text-[15px] text-gray-600">
+        如您近期在情绪、心理方面存在困扰，请及时联系学校心理咨询中心或正规专业医疗机构寻求帮助。
+      </p>
+    </section>
+
+    <!-- 知情同意 -->
+    <section class="mb-10 border border-gray-200 rounded-2xl p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">四、知情同意</h2>
+      <label class="flex items-start gap-3 cursor-pointer select-none">
+        <input type="checkbox" id="consent-checkbox"
+               class="mt-1 h-4 w-4 shrink-0 accent-gray-900 cursor-pointer">
+        <span class="text-[15px] leading-relaxed text-gray-700">
+          我已阅读并理解上述全部说明，确认本测评<strong class="text-gray-900">不构成临床诊断</strong>；
+          我自愿参加本测评，并同意我的匿名作答数据被用于上述课程科研用途。
+        </span>
+      </label>
+      <p id="consent-error" class="hidden mt-3 text-sm text-red-600">请先勾选同意选项，方可进入问卷。</p>
+    </section>
+
+    <!-- 进入按钮 -->
+    <div class="flex items-center justify-between">
+      <p class="text-xs text-gray-400">预计用时 8–12 分钟 · 匿名作答</p>
+      <button id="enter-btn" disabled
+              class="px-8 py-3 rounded-full bg-gray-900 text-white text-sm font-medium tracking-wide
+                     disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed
+                     hover:bg-gray-700 transition-colors">
+        进入问卷
+      </button>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-100 mt-12">
+    <div class="max-w-3xl mx-auto px-6 py-6 text-xs text-gray-400 leading-relaxed">
+      本测评仅用于课程科研探索，不构成任何临床或心理诊断。结果仅供个人参考。
+    </div>
+  </footer>
+
+  <script>
+    const checkbox = document.getElementById('consent-checkbox');
+    const enterBtn = document.getElementById('enter-btn');
+    const consentError = document.getElementById('consent-error');
+
+    checkbox.addEventListener('change', () => {
+      enterBtn.disabled = !checkbox.checked;
+      if (checkbox.checked) consentError.classList.add('hidden');
+    });
+
+    enterBtn.addEventListener('click', () => {
+      if (!checkbox.checked) {
+        consentError.classList.remove('hidden');
+        return;
+      }
+      sessionStorage.setItem('psa_consent_v1', '1');
+      window.location.href = '/survey.html';
+    });
+  </script>
+</body>
+</html>
