@@ -173,7 +173,7 @@
     const id = params.get('id');
 
     if (!id) {
-      window.location.replace('/');
+      window.location.replace('./');
       return;
     }
 
@@ -183,7 +183,7 @@
       if (!res.ok) throw new Error();
       data = await res.json();
     } catch {
-      window.location.replace('/');
+      window.location.replace('./');
       return;
     }
 
