@@ -1,0 +1,35 @@
+component: scf
+name: psycho-assessment
+app: psycho-assessment
+stage: dev
+
+inputs:
+  name: psycho-assessment
+  type: web
+  runtime: Nodejs20
+  region: ap-shanghai
+  src:
+    src: ./
+    exclude:
+      - node_modules
+      - .git
+      - data
+      - scripts
+      - render-create.json
+      - test-tos.cjs
+      - _verify*.cjs
+  entryFile: server.js
+  timeout: 60
+  memorySize: 1024
+  installDependency: true
+  environment:
+    variables:
+      ADMIN_PASSWORD: ${env:ADMIN_PASSWORD, 'admin123'}
+      NODE_ENV: production
+      # 密钥只从部署机的环境变量读取（参考 .env.example），切勿在此硬编码
+      TOS_ACCESS_KEY: ${env:TOS_ACCESS_KEY}
+      TOS_SECRET_KEY: ${env:TOS_SECRET_KEY}
+      TOS_ENDPOINT: tos-cn-shanghai.volces.com
+      TOS_REGION: cn-shanghai
+      TOS_BUCKET: psycho-data
+      TOS_KEY: responses.json

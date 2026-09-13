@@ -1,10 +1,13 @@
 # 依赖
 node_modules/
 
-# 运行时数据（由持久磁盘/TOS 管理，不入库）
-data/responses.json
-data/*.bak
-data/*.tmp
+# 运行时数据（由 TOS 对象存储持久化，本地 JSON 不入库；含被试原始作答）
+data/*
+!data/.gitkeep
+
+# Serverless Framework 本地状态与临时部署产物（含敏感信息，不入库）
+.serverless/
+render-create.json
 
 # 日志
 *.log
@@ -19,3 +22,4 @@ Thumbs.db
 # 环境变量
 .env
 .env.*
+!.env.example
