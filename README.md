@@ -9,9 +9,9 @@
 
 | 项目 | 链接 |
 | --- | --- |
-| 在线应用（GitHub Pages） | `TODO：部署后替换为 GitHub Pages 地址` |
+| 在线应用（GitHub Pages） | https://liuze744-frogtiano.github.io/psycho-assessment/ |
 | 后端 API（腾讯云 SCF） | `https://1486566271-58usi2l3bw.ap-shanghai.tencentscf.com` |
-| 源代码仓库 | `TODO：替换为 GitHub 仓库地址` |
+| 源代码仓库 | https://github.com/liuze744-Frogtiano/psycho-assessment |
 
 ## 功能概览
 
