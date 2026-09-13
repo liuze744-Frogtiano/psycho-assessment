@@ -39,14 +39,14 @@
   }
 
   async function fetchStats(key) {
-    const res = await fetch('/api/admin/stats', { headers: { 'x-admin-key': key } });
+    const res = await fetch(API_BASE + '/api/admin/stats', { headers: { 'x-admin-key': key } });
     if (res.status === 401) throw new Error('unauthorized');
     if (!res.ok) throw new Error('server');
     return res.json();
   }
 
   async function fetchRecords(key) {
-    const res = await fetch('/api/admin/records', { headers: { 'x-admin-key': key } });
+    const res = await fetch(API_BASE + '/api/admin/records', { headers: { 'x-admin-key': key } });
     if (res.status === 401) throw new Error('unauthorized');
     if (!res.ok) throw new Error('server');
     return res.json();
@@ -394,7 +394,7 @@
     btn.disabled = true;
     btn.textContent = '删除中…';
     try {
-      const res = await fetch('/api/admin/records/' + encodeURIComponent(id), {
+      const res = await fetch(API_BASE + '/api/admin/records/' + encodeURIComponent(id), {
         method: 'DELETE',
         headers: { 'x-admin-key': key }
       });

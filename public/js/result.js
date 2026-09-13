@@ -173,17 +173,17 @@
     const id = params.get('id');
 
     if (!id) {
-      window.location.replace('/');
+      window.location.replace('./');
       return;
     }
 
     let data;
     try {
-      const res = await fetch('/api/results/' + encodeURIComponent(id));
+      const res = await fetch(API_BASE + '/api/results/' + encodeURIComponent(id));
       if (!res.ok) throw new Error();
       data = await res.json();
     } catch {
-      window.location.replace('/');
+      window.location.replace('./');
       return;
     }
 

@@ -10,6 +10,10 @@ const fs = require('fs');
 const fsp = fs.promises;
 const crypto = require('crypto');
 
+// 优先 IPv4 解析：部分 serverless 容器无 IPv6 出口，Node 18 默认 IPv6 优先会导致
+// 访问外部对象存储（TOS）连接超时
+require('dns').setDefaultResultOrder('ipv4first');
+
 const {
   LIKERT_OPTIONS,
   DIMENSIONS,
@@ -29,10 +33,30 @@ const stats = require('./lib/stats');
 const { readResponses, writeResponses, tosEnabled, LOCAL_FILE } = require('./lib/storage');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env._FAAS_RUNTIME_PORT || process.env.PORT || process.env.SCF_PORT || 9000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error('[body-parser error]', err.message);
+    return res.status(400).json({ error: '请求数据格式错误，请检查输入。' });
+  }
+  next();
+});
+// SCF HTTP 触发器会强制添加 Content-Disposition: attachment，导致浏览器下载而非渲染页面
+// 通过重写 res.end 在最终发送前强制覆盖为 inline
+app.use((req, res, next) => {
+  const originalEnd = res.end;
+  res.end = function (...args) {
+    if (!res.headersSent) {
+      res.setHeader('Content-Disposition', 'inline');
+    }
+    return originalEnd.apply(this, args);
+  };
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* ---------------- 数据读写已迁移至 lib/storage.js ---------------- */
@@ -135,6 +159,32 @@ app.get('/api/admin/records', async (req, res) => {
     likert: LIKERT_OPTIONS,
     records
   });
+});
+
+// 管理诊断：检查存储层连通性（需口令），用于快速定位数据保存失败的原因
+app.get('/api/admin/diag-storage', async (req, res) => {
+  if (req.get('x-admin-key') !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: '访问口令错误。' });
+  }
+  const started = Date.now();
+  try {
+    const list = await readResponses();
+    res.json({ ok: true, tosEnabled, records: list.length, costMs: Date.now() - started });
+  } catch (err) {
+    res.json({
+      ok: false,
+      tosEnabled,
+      error: {
+        name: err && err.name,
+        code: err && err.code,
+        statusCode: err && err.statusCode,
+        message: err && err.message,
+        syscall: err && err.syscall,
+        hostname: err && err.hostname
+      },
+      costMs: Date.now() - started
+    });
+  }
 });
 
 // 管理：删除单条用户记录（需口令）

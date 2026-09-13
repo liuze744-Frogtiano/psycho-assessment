@@ -9,13 +9,13 @@
 
   /* 知情同意守卫：未同意则返回首页 */
   if (!sessionStorage.getItem(CONSENT_KEY)) {
-    window.location.replace('/');
+    window.location.replace('./');
     return;
   }
 
   async function init() {
     try {
-      const data = await fetch('/api/questions').then((r) => r.json());
+      const data = await fetch(API_BASE + '/api/questions').then((r) => r.json());
       state.questions = data.questions;
       state.likert = data.likert;
       render(data);
@@ -148,14 +148,14 @@
     btn.textContent = '正在提交…';
 
     try {
-      const res = await fetch('/api/responses', {
+      const res = await fetch(API_BASE + '/api/responses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answers })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '提交失败');
-      window.location.href = '/result?id=' + encodeURIComponent(data.id);
+      window.location.href = 'result.html?id=' + encodeURIComponent(data.id);
     } catch (err) {
       errEl.textContent = err.message || '提交失败，请稍后重试。';
       errEl.classList.remove('hidden');
